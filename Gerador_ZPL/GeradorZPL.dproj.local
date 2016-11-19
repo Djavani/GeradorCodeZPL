@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2016/11/19 14:32:56.882.pas,C:\Users\DJavani\Documents\RAD Studio\Projects\Unit1.pas=D:\Projetos\Dephi2010\Gerador_ZPL\uPrincipal.pas</Transaction>
+    <Transaction>2016/11/19 14:32:56.882.dfm,C:\Users\DJavani\Documents\RAD Studio\Projects\Unit1.dfm=D:\Projetos\Dephi2010\Gerador_ZPL\uPrincipal.dfm</Transaction>
+    <Transaction>2016/11/19 14:33:03.177.dproj,C:\Users\DJavani\Documents\RAD Studio\Projects\Project2.dproj=D:\Projetos\Dephi2010\Gerador_ZPL\GeradorZPL.dproj</Transaction>
+    <Transaction>2016/11/19 16:21:11.624.pas,D:\Projetos\Dephi2010\Gerador_ZPL\Unit1.pas=D:\Projetos\Dephi2010\Gerador_ZPL\uGeraCodigoZPL.pas</Transaction>
+  </Transactions>
+</BorlandProject>

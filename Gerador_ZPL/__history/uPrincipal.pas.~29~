@@ -1,0 +1,265 @@
+unit uPrincipal;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
+  Dialogs, cxGraphics, cxLookAndFeels, cxLookAndFeelPainters, Menus, cxControls,
+  dxSkinsCore, dxSkinBlack, dxSkinBlue, dxSkinCaramel, dxSkinCoffee,
+  dxSkinDarkRoom, dxSkinDarkSide, dxSkinFoggy, dxSkinGlassOceans,
+  dxSkiniMaginary, dxSkinLilian, dxSkinLiquidSky, dxSkinLondonLiquidSky,
+  dxSkinMcSkin, dxSkinMoneyTwins, dxSkinOffice2007Black, dxSkinOffice2007Blue,
+  dxSkinOffice2007Green, dxSkinOffice2007Pink, dxSkinOffice2007Silver,
+  dxSkinOffice2010Black, dxSkinOffice2010Blue, dxSkinOffice2010Silver,
+  dxSkinPumpkin, dxSkinSeven, dxSkinSharp, dxSkinSilver, dxSkinSpringTime,
+  dxSkinStardust, dxSkinSummer2008, dxSkinsDefaultPainters, dxSkinValentine,
+  dxSkinXmas2008Blue, cxSplitter, cxContainer, cxEdit, cxListBox, StdCtrls,
+  cxButtons, ExtCtrls, cxTextEdit, cxLabel, cxGroupBox, cxMaskEdit, cxSpinEdit,
+  cxSpinButton, dxSkinscxPCPainter, cxPC, cxDropDownEdit, cxCalendar, cxMemo;
+
+type
+  TfrmPrincipal = class(TForm)
+    pnlbottom: TPanel;
+    btnSair: TcxButton;
+    pnlFundo: TPanel;
+    pnlright: TPanel;
+    cxSplitter1: TcxSplitter;
+    pnlTop: TPanel;
+    btnGeraZPLCode: TcxButton;
+    pgcGerador: TcxPageControl;
+    cxTabSheet1: TcxTabSheet;
+    cxTabSheet2: TcxTabSheet;
+    cxTabSheet3: TcxTabSheet;
+    pnlInfoEtiqueta: TPanel;
+    grpPrinterInfo: TcxGroupBox;
+    cxLabel9: TcxLabel;
+    cxLabel11: TcxLabel;
+    pnlClienteInfo: TPanel;
+    grpClienteInfo: TcxGroupBox;
+    cxLabel1: TcxLabel;
+    edtClienteNome: TcxTextEdit;
+    pnlProdutoInfo: TPanel;
+    grpProdutoInfo: TcxGroupBox;
+    cxLabel5: TcxLabel;
+    edtProdutoDescricao: TcxTextEdit;
+    cxLabel6: TcxLabel;
+    cxLabel7: TcxLabel;
+    cxLabel8: TcxLabel;
+    edtProdutoQuantidade: TcxSpinEdit;
+    dateProdutoValidade: TcxDateEdit;
+    dateProdutoEntrega: TcxDateEdit;
+    cxLabel4: TcxLabel;
+    edtProdutoValor: TcxSpinEdit;
+    cxGroupBox3: TcxGroupBox;
+    cxLabel2: TcxLabel;
+    edtClienteEnderecoRua: TcxTextEdit;
+    cxLabel10: TcxLabel;
+    edtClienteEnderecoBairro: TcxTextEdit;
+    cxLabel12: TcxLabel;
+    edtClienteEnderecoNumeroComplemento: TcxTextEdit;
+    cxLabel13: TcxLabel;
+    edtClienteEnderecoNumero: TcxSpinEdit;
+    edtClienteEnderecoCidade: TcxTextEdit;
+    cxLabel16: TcxLabel;
+    cxLabel17: TcxLabel;
+    edtClienteEnderecoCEP: TcxTextEdit;
+    cxLabel18: TcxLabel;
+    cmbClienteEnderecoUF: TcxComboBox;
+    cxGroupBox2: TcxGroupBox;
+    cxLabel14: TcxLabel;
+    edtEtiquetaDotMargemEsquerda: TcxSpinEdit;
+    cxLabel15: TcxLabel;
+    edtEtiquetaDotTopo: TcxSpinEdit;
+    edEtiquetaAltura: TcxSpinEdit;
+    edEtiquetaLargura: TcxSpinEdit;
+    btnLimparCodigo: TcxButton;
+    memEtiqueta: TcxMemo;
+    btnCopiarCodigo: TcxButton;
+    lblClipBoardCode: TcxLabel;
+    procedure btnSairClick(Sender: TObject);
+    procedure btnGeraZPLCodeClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure btnLimparCodigoClick(Sender: TObject);
+    procedure edEtiquetaAlturaPropertiesChange(Sender: TObject);
+    procedure edEtiquetaLarguraPropertiesChange(Sender: TObject);
+    procedure edtEtiquetaDotTopoPropertiesChange(Sender: TObject);
+    procedure edtEtiquetaDotMargemEsquerdaPropertiesChange(Sender: TObject);
+    procedure edtProdutoValorPropertiesChange(Sender: TObject);
+    procedure dateProdutoValidadePropertiesEditValueChanged(Sender: TObject);
+    procedure dateProdutoEntregaPropertiesEditValueChanged(Sender: TObject);
+    procedure btnCopiarCodigoClick(Sender: TObject);
+    procedure memEtiquetaPropertiesEditValueChanged(Sender: TObject);
+  private
+    { Private declarations }
+    function ValidarData( aData :TDateTime) : Boolean;
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPrincipal: TfrmPrincipal;
+
+implementation
+
+  uses
+    ClipBrd, uGeraCodigoZPL;
+
+{$R *.dfm}
+
+procedure TfrmPrincipal.btnCopiarCodigoClick(Sender: TObject);
+begin
+  Clipboard.asText := memEtiqueta.Text;
+  messagedlg('O código ZPL alterado está na área de transferência.' + #13 + 'Control V habilitado.',mtInformation,[mbOk],0);
+end;
+
+procedure TfrmPrincipal.btnGeraZPLCodeClick(Sender: TObject);
+var GeraCodigoZPL : TGeraCodigoZPL;
+    CodigoZPLGerado : string;
+begin
+  try
+    // cria o objeto
+    GeraCodigoZPL := TGeraCodigoZPL.Create;
+
+    //setando os atributos
+    GeraCodigoZPL.PontoInicialImpressao_Topo := edtEtiquetaDotTopo.Value;
+    GeraCodigoZPL.PontoInicialImpressao_MargemEsquerda := edtEtiquetaDotMargemEsquerda.Value;
+
+    GeraCodigoZPL.ClienteNome := edtClienteNome.Text;
+    //aqui concatenar os campos de endereço ?
+    GeraCodigoZPL.ClienteEndereco := edtClienteEnderecoRua.Text;
+    //atribuindo os campos de produto
+    GeraCodigoZPL.ProdutoDescricao := edtProdutoDescricao.Text;
+    GeraCodigoZPL.ProdutoQuantidade := edtProdutoQuantidade.Value;
+    GeraCodigoZPL.ProdutoDataValidade := dateProdutoValidade.Date;
+    GeraCodigoZPL.ProdutoDataEntrega := dateProdutoEntrega.Date;
+    GeraCodigoZPL.ProdutoValor := edtProdutoValor.Value;
+
+    //chama o metodo de geracao do codigo e devolve uma string com o codigo gerado
+    CodigoZPLGerado :=  GeraCodigoZPL.GerarCodigoZPL(GeraCodigoZPL.PontoInicialImpressao_Topo, GeraCodigoZPL.PontoInicialImpressao_MargemEsquerda,
+                                                      GeraCodigoZPL.ClienteNome, GeraCodigoZPL.ClienteEndereco, GeraCodigoZPL.ProdutoDescricao,
+                                                      GeraCodigoZPL.ProdutoQuantidade, GeraCodigoZPL.ProdutoValor, DateToStr(GeraCodigoZPL.ProdutoDataValidade),
+                                                      DateToStr(GeraCodigoZPL.ProdutoDataEntrega));
+    //consegui gerar um codigo
+    if (CodigoZPLGerado <> EmptyStr) then begin
+      //limpando o list box, para garantir
+      memEtiqueta.Text := '';
+
+      //adicionando o codigo no Memo
+      memEtiqueta.Text := CodigoZPLGerado;
+
+      Clipboard.asText := memEtiqueta.Text;
+
+      //habilitando os componentes de auxilio
+      lblClipBoardCode.Visible := True;
+      btnLimparCodigo.Enabled := True;
+      btnCopiarCodigo.Enabled := True;
+
+    end;
+
+
+  finally
+    FreeAndNil(GeraCodigoZPL);
+  end;
+
+
+end;
+
+procedure TfrmPrincipal.btnSairClick(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
+procedure TfrmPrincipal.btnLimparCodigoClick(Sender: TObject);
+begin
+  memEtiqueta.Text := '';
+end;
+
+procedure TfrmPrincipal.dateProdutoEntregaPropertiesEditValueChanged(
+  Sender: TObject);
+begin
+  if (not ValidarData(dateProdutoEntrega.Date)) then begin
+    dateProdutoEntrega.Date := Date;
+  end;
+
+  //validando se a data de entrega é maior que a data da validade
+  if(dateProdutoEntrega.Date > dateProdutoValidade.Date) then begin
+     messagedlg('A Data da entrega é maior que a Data de Validade.',mtInformation,[mbOk],0);
+     dateProdutoEntrega.SetFocus;
+  end;
+end;
+
+procedure TfrmPrincipal.dateProdutoValidadePropertiesEditValueChanged(
+  Sender: TObject);
+begin
+  if (not ValidarData(dateProdutoValidade.Date)) then begin
+    dateProdutoValidade.Date := Date;
+  end;
+end;
+
+procedure TfrmPrincipal.edEtiquetaAlturaPropertiesChange(Sender: TObject);
+begin
+  if(edEtiquetaAltura.Value < 0) then begin
+    edEtiquetaAltura.Value := 0;
+  end;
+
+end;
+
+procedure TfrmPrincipal.edEtiquetaLarguraPropertiesChange(Sender: TObject);
+begin
+  if(edEtiquetaLargura.Value < 0) then begin
+    edEtiquetaLargura.Value := 0;
+  end;
+end;
+
+procedure TfrmPrincipal.edtEtiquetaDotMargemEsquerdaPropertiesChange(
+  Sender: TObject);
+begin
+  if (edtEtiquetaDotMargemEsquerda.Value < 0) then begin
+    edtEtiquetaDotMargemEsquerda.Value := 0;
+  end;
+end;
+
+procedure TfrmPrincipal.edtEtiquetaDotTopoPropertiesChange(Sender: TObject);
+begin
+  if(edtEtiquetaDotTopo.Value < 0) then begin
+    edtEtiquetaDotTopo.Value := 0;
+  end;
+end;
+
+procedure TfrmPrincipal.edtProdutoValorPropertiesChange(Sender: TObject);
+begin
+  if(edtProdutoValor.Value <0) then begin
+    edtProdutoValor.Value := 0;
+  end;
+end;
+
+procedure TfrmPrincipal.FormCreate(Sender: TObject);
+begin
+  pgcGerador.ActivePageIndex := 0;
+end;
+
+procedure TfrmPrincipal.memEtiquetaPropertiesEditValueChanged(Sender: TObject);
+begin
+//Houve alteracao do conteudo gerado pela classe, usuario manipulou o Memo entao habilito o botao de copiar
+  // para o Clipboard;
+  if (memEtiqueta.Text <> Clipboard.asText) then begin
+    btnCopiarCodigo.Enabled := True;
+  end;
+end;
+
+function TfrmPrincipal.ValidarData(aData :TDateTime) :Boolean;
+var
+  vData : TDateTime;
+begin
+  Result := False;
+  vData := aData;
+  if(vData < Date) then begin
+    messagedlg('A Data não pode ser menor que a data atual.',mtInformation,[mbOk],0);
+    //deu erro, saio e formato a data no componente para o dia atual.
+    Exit;
+  end;
+  //ok nao deu erro
+  Result := True;
+end;
+
+end.

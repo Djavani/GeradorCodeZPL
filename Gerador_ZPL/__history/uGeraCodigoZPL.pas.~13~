@@ -1,0 +1,201 @@
+unit uGeraCodigoZPL;
+
+interface
+
+type TGeraCodigoZPL = class
+
+private
+
+// atributos e metodos privados
+  {Ponto inicial de impressão = informa quial o ponto da etiqueta vai começar a
+  impressao}
+  fPontoInicialImpressao_MargemEsquerda : string;
+  fPontoInicialImpressao_Topo : string;
+
+  {Fields de Cliente}
+  //nao esquecer de concatenar o valor de ponto de inicio
+  fClienteNome : string;
+  fClienteEndereco : string;
+
+  {Fields de Produto}
+  fProdutoDescricao : string;
+  fProdutoQuantidade : string;
+  fProdutoDataValidade : TDateTime;
+  fProdutoDataEntrega : TDateTime;
+  fProdutoValor : string;
+
+  procedure SetPontoInicialImpressao_MargemEsquerda(const Value: string);
+  procedure SetPontoInicialImpressao_Topo(const Value: string);
+
+  procedure SetClienteNome(const Value: string);
+  procedure SetClienteEndereco(const Value: string);
+
+  procedure SetProdutoDescricao(const Value: string);
+  procedure SetProdutoQuantidade(const Value: string);
+  procedure SetProdutoDataValidade(const Value: TDateTime);
+  procedure SetProdutoValor(const Value: string);
+  procedure SetProdutoDataEntrega(const Value: TDateTime);
+
+
+protected
+
+//atributos e metodos protegidos
+
+public
+
+//atributos e metodos publicos
+  {Propertys de Configuracao de Impressao}
+  property PontoInicialImpressao_MargemEsquerda :string
+    read fPontoInicialImpressao_MargemEsquerda write fPontoInicialImpressao_MargemEsquerda;
+  property PontoInicialImpressao_Topo :string
+    read fPontoInicialImpressao_Topo write fPontoInicialImpressao_Topo;
+
+  {Propertys de Cliente}
+  property ClienteNome  : string read fClienteNome write fClienteNome;
+  property ClienteEndereco  : string read fClienteEndereco write fClienteEndereco;
+
+  {Propertys de Produto}
+  property ProdutoDescricao  : string read fProdutoDescricao write fProdutoDescricao;
+  property ProdutoQuantidade  : string read fProdutoQuantidade write fProdutoQuantidade;
+  property ProdutoDataValidade  : TDateTime read fProdutoDataValidade write fProdutoDataValidade;
+  property ProdutoDataEntrega  : TDateTime read fProdutoDataEntrega write fProdutoDataEntrega;
+  property ProdutoValor  : string read fProdutoValor write fProdutoValor;
+
+  Constructor Create;    // declaração do metodo construtor
+
+  Destructor  Destroy; Override; // declaração do metodo destrutor
+
+  //Metodos da classe
+  function GerarCodigoZPL( aPontoInicialImpressao_MargemEsquerda :string; aPontoInicialImpressao_Topo :string;
+    aClienteNome : string; aClienteEndereco :string; aProdutoDescricao :string; aProdutoQuantidade :string;
+    aProdutoDataValidade :string; aProdutoDataEntrega :string; aProdutoValor :string) :string;
+end;
+
+
+implementation
+
+{ TGeraCodigoZPL }
+constructor TGeraCodigoZPL.Create;
+
+begin
+
+// metodo contrutor
+
+end;
+
+destructor TGeraCodigoZPL.Destroy;
+
+begin
+
+// metodo destrutor
+
+inherited;
+
+end;
+
+function TGeraCodigoZPL.GerarCodigoZPL(aPontoInicialImpressao_MargemEsquerda,
+  aPontoInicialImpressao_Topo, aClienteNome, aClienteEndereco,
+  aProdutoDescricao, aProdutoQuantidade, aProdutoDataValidade,
+  aProdutoDataEntrega: string; aProdutoValor: string) :string;
+var
+  vPontoInicialImpressao_MargemEsquerda,
+  vPontoInicialImpressao_Topo, vClienteNome, vClienteEndereco,
+  vProdutoDescricao, vProdutoQuantidade, vProdutoValor: string;
+  vCodigoZPL: string;
+  vProdutoDataValidade, vProdutoDataEntrega: string;
+
+begin
+  Result := '';
+  try
+    vPontoInicialImpressao_MargemEsquerda := aPontoInicialImpressao_MargemEsquerda;
+    vPontoInicialImpressao_Topo := aPontoInicialImpressao_Topo;
+
+    vClienteNome := aClienteNome;
+    vClienteEndereco := aClienteEndereco;
+
+    vProdutoDescricao := aProdutoDescricao;
+    vProdutoQuantidade := aProdutoQuantidade;
+    vProdutoDataValidade := aProdutoDataValidade;
+    vProdutoDataEntrega := aProdutoDataEntrega;
+    vProdutoValor := aProdutoValor;
+
+    vCodigoZPL := '^XA' + #13#10;
+    //Tamanho da fonte 30px
+    vCodigoZPL := vCodigoZPL + '^CFA,30' +#13#10;
+    vCodigoZPL := vCodigoZPL + #13#10;
+    vCodigoZPL := vCodigoZPL + '^LH' + vPontoInicialImpressao_MargemEsquerda +','+ vPontoInicialImpressao_Topo +#13#10;
+
+    //tamanho da linha de titulo ?
+    vCodigoZPL := vCodigoZPL + '^CF0,70' + #13#10;
+    vCodigoZPL := vCodigoZPL + '^FO50,20' + '^FD' + 'Destinatario: ' + vClienteNome + '^FS' + #13#10;
+    vCodigoZPL := vCodigoZPL + '^FO50,70' + '^FD' + 'Endereco: ' + vClienteEndereco + '^FS' + #13#10;
+
+    //separador
+    vCodigoZPL := vCodigoZPL + '^FO50,120^GB700,1,3^FS' +#13#10;
+
+    //fields de produto
+    //altero o tamanho da fonte, um pouco menor que a anteior
+    vCodigoZPL := vCodigoZPL + '^CFA,25' + #13#10;
+    vCodigoZPL := vCodigoZPL + '^FO50,180' + '^FD' + 'Produto: ' + vProdutoDescricao + '^FS' + #13#10;
+    vCodigoZPL := vCodigoZPL + '^FO50,220' + '^FD' + 'Quantidade: ' + vProdutoQuantidade + '^FS' + #13#10;
+    vCodigoZPL := vCodigoZPL + '^FO50,260' + '^FD' + 'Valor: R$' + vProdutoValor + '^FS';
+    vCodigoZPL := vCodigoZPL + '^FO50,300' + '^FD' + 'Data de Validade: ' + vProdutoDataValidade + '^FS' + #13#10;
+    vCodigoZPL := vCodigoZPL + '^FO50,340' + '^FD' + 'Data da Entrega:' + vProdutoDataEntrega + '^FS' + #13#10;
+
+    vCodigoZPL := vCodigoZPL +'^FO50,160' +  '^XZ';
+
+    Result := vCodigoZPL;
+  finally
+
+  end;
+
+
+end;
+
+procedure TGeraCodigoZPL.SetClienteEndereco(const Value: string);
+begin
+  fClienteEndereco := Value;
+end;
+
+procedure TGeraCodigoZPL.SetClienteNome(const Value: string);
+begin
+ fClienteNome := Value;
+end;
+
+procedure TGeraCodigoZPL.SetPontoInicialImpressao_MargemEsquerda(
+  const Value: string);
+begin
+  fPontoInicialImpressao_MargemEsquerda := Value;
+end;
+
+procedure TGeraCodigoZPL.SetPontoInicialImpressao_Topo(const Value: string);
+begin
+  fPontoInicialImpressao_Topo := Value;
+end;
+
+procedure TGeraCodigoZPL.SetProdutoDataEntrega(const Value: TDateTime);
+begin
+   fProdutoDataEntrega := Value;
+end;
+
+procedure TGeraCodigoZPL.SetProdutoDataValidade(const Value: TDateTime);
+begin
+  fProdutoDataValidade := Value;
+end;
+
+procedure TGeraCodigoZPL.SetProdutoDescricao(const Value: string);
+begin
+  fProdutoDescricao := Value;
+end;
+
+procedure TGeraCodigoZPL.SetProdutoQuantidade(const Value: string);
+begin
+   fProdutoQuantidade := Value;
+end;
+
+procedure TGeraCodigoZPL.SetProdutoValor(const Value: string);
+begin
+  fProdutoValor := Value;
+end;
+
+end.
